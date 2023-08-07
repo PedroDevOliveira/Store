@@ -39,6 +39,7 @@ func GetProductList() []Product {
 		product.Name = name
 		product.Description = description
 		product.Price = price
+		product.Quantity = quantity
 		product.CreatedAt = create_at
 
 		productList = append(productList, product)
