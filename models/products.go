@@ -2,6 +2,7 @@ package models
 
 import (
 	"Store/db"
+	"Store/shared"
 	"log"
 )
 
@@ -17,20 +18,20 @@ type Product struct {
 func GetProductList() []Product {
 	dbConnection := db.ConnectToPostgres()
 
-	selectAllProducts, err := dbConnection.Query("select * from products")
+	selectAllProducts, err := dbConnection.Query("SELECT id, name, description, price, quantity, created_at as createdAt FROM go_store.public.products;")
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	product := Product{}
-	productList := []Product{}
+	var productList []Product
 
 	for selectAllProducts.Next() {
 		var id, quantity int
-		var name, description, create_at string
+		var name, description, createdAt string
 		var price float64
 
-		err = selectAllProducts.Scan(&id, &name, &description, &price, &quantity, &create_at)
+		err = selectAllProducts.Scan(&id, &name, &description, &price, &quantity, &createdAt)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -40,7 +41,7 @@ func GetProductList() []Product {
 		product.Description = description
 		product.Price = price
 		product.Quantity = quantity
-		product.CreatedAt = create_at
+		product.CreatedAt = shared.FormateDate(createdAt)
 
 		productList = append(productList, product)
 	}
