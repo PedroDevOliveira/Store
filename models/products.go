@@ -48,3 +48,15 @@ func GetProductList() []Product {
 	defer dbConnection.Close()
 	return productList
 }
+
+func CreateProduct(name, description string, price float64, quantity int) {
+	dbConnection := db.ConnectToPostgres()
+
+	createProductData, err := dbConnection.Prepare("INSERT INTO go_store.public.products(name, description, price, quantity) values ($1, $2, $3, $4);")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	createProductData.Exec(name, description, price, quantity)
+	defer dbConnection.Close()
+}

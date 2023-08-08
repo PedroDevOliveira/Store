@@ -20,15 +20,13 @@ var monthMap = map[time.Month]string{
 	time.December:  "Dez",
 }
 
-// Caso queira definir uma timezone
-
-// var loc, _ = time.LoadLocation("America/Sao_Paulo")
+var loc, _ = time.LoadLocation("America/Sao_Paulo")
 
 func FormateDate(date string) string {
 	var timestampedDate, err = time.Parse(time.RFC3339, date)
 	if err != nil {
 		log.Fatal(err)
 	}
-	//createdAt = createdAt.In(loc)
+	timestampedDate = timestampedDate.In(loc)
 	return timestampedDate.Format("01 " + monthMap[timestampedDate.Month()] + " 2006 - 15:04H")
 }
