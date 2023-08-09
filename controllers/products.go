@@ -42,3 +42,24 @@ func Insert(w http.ResponseWriter, r *http.Request) {
 
 	http.Redirect(w, r, "/", 301)
 }
+
+func Delete(w http.ResponseWriter, r *http.Request) {
+	productId := r.URL.Query().Get("id")
+	convertedProductId, err := strconv.Atoi(productId)
+	if err != nil {
+		log.Fatal("Erro na conversão do Id")
+	}
+	models.DeleteProduct(convertedProductId)
+	http.Redirect(w, r, "/", 301)
+}
+
+func Edit(w http.ResponseWriter, r *http.Request) {
+	productId := r.URL.Query().Get("id")
+	convertedProductId, err := strconv.Atoi(productId)
+	if err != nil {
+		log.Fatal("Erro na conversão do Id")
+	}
+	product := models.EditProduct(convertedProductId)
+
+	temp.ExecuteTemplate(w, "Edit", product)
+}

@@ -60,3 +60,47 @@ func CreateProduct(name, description string, price float64, quantity int) {
 	createProductData.Exec(name, description, price, quantity)
 	defer dbConnection.Close()
 }
+
+func DeleteProduct(id int) {
+	dbConnection := db.ConnectToPostgres()
+	deleteProduct, err := dbConnection.Prepare("DELETE FROM go_store.public.products WHERE id=$1;")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	deleteProduct.Exec(id)
+
+	defer dbConnection.Close()
+
+}
+
+func EditProduct(id int) Product {
+	dbConnection := db.ConnectToPostgres()
+	productFromDB, err := dbConnection.Query("SELECT * FROM go_store.public.products WHERE id=$1;", id)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	updatedProduct := Product{}
+
+	for productFromDB.Next() {
+		var id, quantity int
+		var name, description, createdAt string
+		var price float64
+
+		err := productFromDB.Scan(&id, &name, &description, &price, &quantity, &createdAt)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		updatedProduct.Id = id
+		updatedProduct.Name = name
+		updatedProduct.Description = description
+		updatedProduct.Price = price
+		updatedProduct.Quantity = quantity
+
+	}
+
+	defer dbConnection.Close()
+	return updatedProduct
+}

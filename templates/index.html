@@ -1,18 +1,9 @@
 {{define "Index"}}
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
-          crossorigin="anonymous">
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-            crossorigin="anonymous"></script>
-    <title>Loja</title>
-</head>
+
+{{template "_head"}}
+{{template "_menu"}}
+
 <body>
-<nav class="navbar navbar-light bg-light mb-4">
-    <a class="navbar-brand" href="/">Loja</a>
-</nav>
 <div class="container">
     <section class="card">
         <div>
@@ -34,6 +25,8 @@
                     <td>{{.Price}}</td>
                     <td>{{.Quantity}}</td>
                     <td>{{.CreatedAt}}</td>
+                    <td><a href="/edit?id={{.Id}}" class="btn btn-info">Editar</a></td>
+                    <td><button onclick="onDelete('{{.Id}}')" class="btn btn-danger" >Deletar</button></td>
                 </tr>
                 {{end}}
                 </tbody>
@@ -47,5 +40,14 @@
     </div>
 </div>
 </body>
-</html>
+
+<script>
+    function onDelete(id) {
+        let answer = confirm("Tem certeza que deseja deletar esse produto?")
+
+        if (answer) {
+            window.location = "/delete?id=" + id
+        }
+    }
+</script>
 {{end}}
