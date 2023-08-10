@@ -18,7 +18,7 @@ type Product struct {
 func GetProductList() []Product {
 	dbConnection := db.ConnectToPostgres()
 
-	selectAllProducts, err := dbConnection.Query("SELECT id, name, description, price, quantity, created_at as createdAt FROM go_store.public.products;")
+	selectAllProducts, err := dbConnection.Query("SELECT id, name, description, price, quantity, created_at AS createdAt FROM go_store.public.products ORDER BY id ASC;")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -103,4 +103,16 @@ func EditProduct(id int) Product {
 
 	defer dbConnection.Close()
 	return updatedProduct
+}
+
+func UpdateProduct(id int, name, description string, price float64, quantity int) {
+	dbConnection := db.ConnectToPostgres()
+
+	updateProductData, err := dbConnection.Prepare("UPDATE go_store.public.products SET name=$1, description=$2, price=$3, quantity=$4 WHERE id=$5;")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	updateProductData.Exec(name, description, price, quantity, id)
+	defer dbConnection.Close()
 }
